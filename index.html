@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="bg">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Случаен Въпрос</title>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --success-color: #16a34a;
+            --success-bg: #f0fdf4;
+            --danger-color: #dc2626;
+            --danger-bg: #fef2f2;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --bg-body: #f3f4f6;
+            --bg-card: #ffffff;
+            --border-color: #e5e7eb;
+        }
+
+        body { 
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            line-height: 1.5;
+            padding: 40px 20px; 
+            margin: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .quiz-card {
+            background: var(--bg-card);
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+        }
+
+        h1 { 
+            font-size: 1.75rem;
+            margin-top: 0;
+            margin-bottom: 24px;
+            color: var(--text-main);
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        h2 {
+            font-size: 1.25rem;
+            margin-bottom: 20px;
+            color: var(--text-main);
+        }
+
+        .option { 
+            display: flex;
+            align-items: center;
+            margin: 12px 0; 
+            background: #f9fafb;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .option:hover {
+            background: #f3f4f6;
+            border-color: #d1d5db;
+        }
+
+        /* Направихме label-а да запълва целия контейнер за безбъгово кликане */
+        .option label {
+            cursor: pointer;
+            width: 100%;
+            padding: 12px 16px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            user-select: none;
+        }
+
+        .option input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+            flex-shrink: 0;
+        }
+
+        button {
+            font-size: 1rem; 
+            font-weight: 600;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease, opacity 0.2s ease;
+        }
+
+        .actions-container {
+            display: flex;
+            gap: 12px;
+            margin-top: 20px;
+            align-items: center;
+        }
+
+        #next-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        #next-btn:hover:not(:disabled) {
+            background-color: var(--primary-hover);
+        }
+
+        #submit-btn {
+            background-color: #374151;
+            color: white;
+        }
+
+        #submit-btn:hover:not(:disabled) {
+            background-color: #1f2937;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        #explanation-container { 
+            margin-top: 20px; 
+            padding: 16px; 
+            background-color: #eff6ff; 
+            border-left: 4px solid #3b82f6; 
+            border-radius: 0 8px 8px 0;
+            font-size: 0.95rem;
+        }
+
+        #stats { 
+            margin-top: 20px; 
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            background: #f3f4f6;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        #wrong-answers { 
+            margin-top: 30px; 
+            border-top: 2px dashed var(--border-color);
+            padding-top: 20px;
+        }
+
+        #wrong-answers h3 {
+            color: var(--danger-color);
+            margin-top: 0;
+        }
+
+        .wrong-q-item {
+            background: var(--danger-bg);
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            border: 1px solid #fee2e2;
+        }
+
+        .wrong-q-item p {
+            margin: 4px 0;
+        }
+
+        .finish-msg {
+            color: var(--primary-color);
+            font-weight: bold;
+            font-size: 1.2rem;
+            text-align: center;
+            padding: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="quiz-card">
+        <h1>Случаен Въпрос</h1>
+        
+        <div id="question-container"></div>
+        
+        <div class="actions-container">
+            <button id="submit-btn" onclick="checkAnswer()">Провери отговор</button>
+            <button id="next-btn" onclick="showRandomQuestion()" disabled>Нов въпрос</button>
+        </div>
+
+        <div id="explanation-container" style="display: none;"></div>
+        <p id="stats"></p>
+        <div id="wrong-answers"></div>
+    </div>
+
+    <script src="questions.js"></script>
+<script>
+    let shownIndexes = [];
+    let correctCount = 0;
+    let wrongCount = 0;
+    const totalQuestions = questions.length;
+    let wrongQuestions = [];
+    let quizFinished = false;
+    
+    // Глобални променливи за текущия въпрос
+    let currentQuestion = null;
+    let currentShuffledOptions = [];
+    let selectedAnswers = [];
+
+    function shuffle(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function sanitizeText(text) {
+        return String(text).replace(/^\s*\d+[\.\)\-:\s]+/, '').trim();
+    }
+
+    // Изнесено в CSS променливи
+    function updateStats() {
+        const stats = document.getElementById("stats");
+        stats.textContent = `Вярно: ${correctCount} от ${totalQuestions} | Грешно: ${wrongCount}`;
+    }
+
+    function showWrongAnswers() {
+        const container = document.getElementById("wrong-answers");
+        container.innerHTML = "";
+
+        if (wrongQuestions.length > 0) {
+            const header = document.createElement("h3");
+            header.textContent = "Грешно отговорени въпроси:";
+            container.appendChild(header);
+
+            wrongQuestions.forEach(item => {
+                const qDiv = document.createElement("div");
+                qDiv.className = "wrong-q-item";
+
+                const qText = document.createElement("p");
+                qText.style.fontWeight = "600";
+                qText.textContent = `❌ ${item.question}`;
+                qDiv.appendChild(qText);
+
+                item.correctAnswers.forEach(ans => {
+                    const correct = document.createElement("p");
+                    correct.textContent = `✔ Правилен отговор: ${ans}`;
+                    correct.style.color = "var(--success-color)";
+                    correct.style.fontWeight = "500";
+                    qDiv.appendChild(correct);
+                });
+
+                container.appendChild(qDiv);
+            });
+        }
+    }
+
+    function showRandomQuestion() {
+        const container = document.getElementById("question-container");
+        const nextBtn = document.getElementById("next-btn");
+        const submitBtn = document.getElementById("submit-btn");
+        const wrongDiv = document.getElementById("wrong-answers");
+        const explanationDiv = document.getElementById("explanation-container");
+
+        container.innerHTML = "";
+        wrongDiv.innerHTML = "";
+        explanationDiv.style.display = "none";
+        selectedAnswers = [];
+
+        if (quizFinished) {
+            resetQuiz();
+            return;
+        }
+
+        nextBtn.disabled = true;
+        submitBtn.disabled = false;
+
+        if (shownIndexes.length === questions.length) {
+            const msg = document.createElement("p");
+            msg.className = "finish-msg";
+            msg.textContent = "Всички въпроси са отговорени!";
+            container.appendChild(msg);
+
+            showWrongAnswers();
+
+            nextBtn.disabled = false;
+            submitBtn.disabled = true;
+            nextBtn.textContent = "Започни отначало";
+            quizFinished = true;
+            return;
+        }
+
+        let index;
+        do {
+            index = Math.floor(Math.random() * questions.length);
+        } while (shownIndexes.includes(index));
+
+        shownIndexes.push(index);
+
+        currentQuestion = questions[index];
+
+        const q = document.createElement("h2");
+        q.textContent = sanitizeText(currentQuestion.question);
+        container.appendChild(q);
+
+        currentShuffledOptions = shuffle([...currentQuestion.options]);
+
+        currentShuffledOptions.forEach((opt, i) => {
+            const wrapper = document.createElement("div");
+            wrapper.className = "option";
+
+            const label = document.createElement("label");
+            label.htmlFor = `option-${i}`;
+
+            const checkbox = document.createElement("input");
+            checkbox.type = "checkbox";
+            checkbox.id = `option-${i}`;
+
+            checkbox.onchange = () => {
+                if (checkbox.checked) {
+                    selectedAnswers.push(opt.text);
+                } else {
+                    const idx = selectedAnswers.indexOf(opt.text);
+                    if (idx > -1) selectedAnswers.splice(idx, 1);
+                }
+            };
+
+            const textSpan = document.createElement("span");
+            textSpan.textContent = sanitizeText(opt.text);
+
+            label.appendChild(checkbox);
+            label.appendChild(textSpan);
+            wrapper.appendChild(label);
+            container.appendChild(wrapper);
+        });
+    }
+
+    function checkAnswer() {
+        const container = document.getElementById("question-container");
+        const nextBtn = document.getElementById("next-btn");
+        const submitBtn = document.getElementById("submit-btn");
+        const explanationDiv = document.getElementById("explanation-container");
+
+        const correctAnswers = currentShuffledOptions.filter(o => o.correct).map(o => o.text);
+        const selectedSorted = [...selectedAnswers].sort();
+        const correctSorted = [...correctAnswers].sort();
+
+        const isCorrect = JSON.stringify(selectedSorted) === JSON.stringify(correctSorted);
+        const optionDivs = container.querySelectorAll(".option");
+
+        currentShuffledOptions.forEach((opt, idx) => {
+            const label = optionDivs[idx].querySelector("label");
+            const currentWrapper = optionDivs[idx];
+            
+            if (opt.correct) {
+                currentWrapper.style.backgroundColor = "var(--success-bg)";
+                currentWrapper.style.borderColor = "var(--success-color)";
+                label.style.color = "var(--success-color)";
+                label.style.fontWeight = "bold";
+            } else if (selectedAnswers.includes(opt.text)) {
+                currentWrapper.style.backgroundColor = "var(--danger-bg)";
+                currentWrapper.style.borderColor = "var(--danger-color)";
+                label.style.color = "var(--danger-color)";
+            }
+
+            const checkbox = optionDivs[idx].querySelector("input");
+            checkbox.disabled = true;
+        });
+
+        if (isCorrect) {
+            correctCount++;
+            explanationDiv.style.borderLeftColor = "var(--success-color)";
+            explanationDiv.style.backgroundColor = "var(--success-bg)";
+        } else {
+            wrongCount++;
+            wrongQuestions.push({
+                question: sanitizeText(currentQuestion.question),
+                correctAnswers: correctAnswers.map(a => sanitizeText(a))
+            });
+            explanationDiv.style.borderLeftColor = "var(--danger-color)";
+            explanationDiv.style.backgroundColor = "var(--danger-bg)";
+        }
+
+        if (currentQuestion.explanation) {
+            explanationDiv.innerHTML = `<strong>Обяснение:</strong> ${currentQuestion.explanation}`;
+            explanationDiv.style.display = "block";
+        } else if (!isCorrect) {
+            explanationDiv.innerHTML = `<strong>Резултат:</strong> Грешен отговор!`;
+            explanationDiv.style.display = "block";
+        }
+
+        updateStats();
+        submitBtn.disabled = true;
+        nextBtn.disabled = false;
+    }
+
+    function resetQuiz() {
+        shownIndexes = [];
+        correctCount = 0;
+        wrongCount = 0;
+        wrongQuestions = [];
+        quizFinished = false;
+
+        document.getElementById("next-btn").textContent = "Нов въпрос";
+
+        updateStats();
+        showRandomQuestion();
+    }
+
+    updateStats();
+    showRandomQuestion();
+</script>
+
+</body>
+</html>
