@@ -698,7 +698,272 @@ const questions = [
     { "text": "Мултиплексиране, декомпозиране и конвейеризация", "correct": false }
   ],
   "explanation": "Основните състояния на процесите са 'Изпълнение' (когато кодът се обработва от CPU), 'Готовност' (когато процесът чака ред за процесора) и 'Изчакване' (когато се чака входно-изходна операция или събитие)."
+},
+{
+  "question": "Какво означава терминът 'латентност' при конвейерната обработка?",
+  "options": [
+    { "text": "Брой тактове между две последователни инициализации на таблицата на заетост", "correct": true },
+    { "text": "Закъснение за предаване на данните между фазите на конвейера", "correct": false },
+    { "text": "Брой тактове за n последователни инициализации на таблицата на заетост", "correct": false },
+    { "text": "Временно намаляване на конвейерната производителност", "correct": false }
+  ],
+  "explanation": "При анализа на нелинейни многофункционални конвейери чрез таблици на заетост (reservation tables), латентност (latency) се дефинира точно като броя тактове, които изминават между две последователни въвеждания (инициализации) на задачи в конвейера."
+},
+{
+  "question": "Развитието на разпределената обработка на информацията в 21 век се свързва с:",
+  "options": [
+    { "text": "облачни изчисления", "correct": true },
+    { "text": "изграждане на компютърни клъстери", "correct": false },
+    { "text": "изграждане на терминални комплекси", "correct": false },
+    { "text": "Грид изчисления", "correct": false }
+  ],
+  "explanation": "Докато клъстерите и грид изчисленията се развиват интензивно в края на 20 век, тоталният разцвет и дефиниращата парадигма за разпределена обработка през 21 век са именно облачните изчисления (Cloud Computing)."
+},
+{
+  "question": "Вярно ли е, че в мрежите с комутация на пакети (МКП) едновременно се пренасят порции от съобщения към различни получатели?",
+  "options": [
+    { "text": "Истина", "correct": true },
+    { "text": "Неистина", "correct": false }
+  ],
+  "explanation": "Твърдението е истина. При комутацията на пакети съобщенията се разпределят на отделни малки порции (пакети), които споделят преносната среда и могат да се пренасят паралелно/интерливно през мрежата към различни крайни дестинации."
+},
+{
+  "question": "Кой от посочените методи не е метод за преобразуване на виртуални адреси?",
+  "options": [
+    { "text": "Метод на локалността (по време и пространство)", "correct": true },
+    { "text": "Метод на странична организация", "correct": false },
+    { "text": "Метод на сегментна организация", "correct": false },
+    { "text": "Метод на сегментно-странична организация", "correct": false }
+  ],
+  "explanation": "Страничната, сегментната и сегментно-страничната организация са класически архитектурни методи за управление на паметта и транслация на виртуални адреси във физически. Методът на локалността е фундаментално свойство на програмите, което обяснява защо кеш паметта и виртуалната памет работят ефективно, но самият той не е механизъм или метод за преобразуване на адреси."
+},
+{
+  "question": "Посочете вярната формулировка на закона на Amdahl",
+  "options": [
+    { "text": "S_n = n / (1 + (n - 1)α)", "correct": true },
+    { "text": "S_n = n * (1 + (n - 1) / α)", "correct": false },
+    { "text": "S_n = n / (1 + (n - 1) / α)", "correct": false },
+    { "text": "S_n = n * (1 + (n - 1)α)", "correct": false }
+  ],
+  "explanation": "Законът на Амдал определя ускорението на системата S_n в зависимост от броя на процесорите (n) и последователната част на алгоритъма (α). Вярната математическа формулировка, представена в опциите, е S_n = n / (1 + (n - 1)α), което е еквивалентно на класическия вид S_n = 1 / (α + (1 - α)/n) след съответното преобразуване."
+},
+{
+  "question": "Нивото, което поддържа процесите по планиране и управление на изчисленията е:",
+  "options": [
+    { "text": "Системното ниво", "correct": true },
+    { "text": "Апаратното ниво", "correct": false },
+    { "text": "Приложното ниво", "correct": false },
+    { "text": "Нито едно от посочените", "correct": false }
+  ],
+  "explanation": "Системното ниво (което включва операционната система и диспечерите на задачи) отговаря директно за управлението на ресурсите, разпределянето на процесорно време и планирането на изчисленията в компютърната система."
+},
+{
+  "question": "Вярно ли е, че едновременно в мрежите с комутация на канали (МКК) се пренасят съобщения от различни изпращачи?",
+  "options": [
+    { "text": "Неистина", "correct": true },
+    { "text": "Истина", "correct": false }
+  ],
+  "explanation": "При комутацията на канали (МКК) за всяка комуникационна сесия се заделя изключителен, физически непрекъснат и гарантиран канал по целия път между предавателя и приемника. Този канал не може да се споделя динамично или да пренася съобщения от други изпращачи едновременно, докато връзката не бъде прекратена."
+},
+{
+  "question": "Which of the following statements is not true?",
+  "options": [
+    { "text": "Multiprocessor and multicomputer resources are separated into many nodes", "correct": true },
+    { "text": "System area network interconnects the system memory and the interfaces in short range", "correct": false },
+    { "text": "In opposite of the system networks, local networks interconnects several systems", "correct": false },
+    { "text": "There are lots of network technologies for interconnection in parallel computers, for instance: SCI, FDDI, InfiniBand, Marynet", "correct": false }
+  ],
+  "explanation": "The statement about multiprocessor and multicomputer resources being separated into many nodes is inaccurate because multiprocessors traditionally feature a single shared address space across tight physical coupling, whereas multicomputers are explicitly structured as a collection of independent, distributed nodes."
+},
+{
+  "question": "Scalability dimensions in parallel architectures include:",
+  "options": [
+    { "text": "Performance scalability", "correct": true },
+    { "text": "Dimension scalability and generation", "correct": false },
+    { "text": "Resources scalability", "correct": false },
+    { "text": "Heterogeneous scalability", "correct": false },
+    { "text": "Scalability of the price/efficiency ratio", "correct": false }
+  ],
+  "explanation": "Performance scalability is a core dimension in parallel architectures, describing the system's ability to proportionally increase its processing speed or throughput as more computational resources (such as processors or nodes) are added."
+},
+{
+  "question": "Which of the following computer architectures are characterized by functional programming languages and functions of higher level?",
+  "options": [
+    { "text": "Reduction parallel architectures", "correct": true },
+    { "text": "Evolutional parallel architectures", "correct": false },
+    { "text": "Parallel computers with functional configuration", "correct": false },
+    { "text": "Radical parallel architectures", "correct": false },
+    { "text": "Parallel logical computers", "correct": false }
+  ],
+  "explanation": "Reduction architectures (such as graph reduction machines) are specifically designed to directly support functional programming languages by evaluating expressions through recursive reduction processes, matching the mathematical nature of higher-order functions."
+},
+{
+  "question": "CSP – “комуникиращи си последователни процеси” - равнопоставени процеси . Този модел е процесен модел , базиран на обща памет. CSP допуска едрозърнест и дребнозърнест паралелизъм.",
+  "options": [
+    { "text": "Неистина", "correct": true },
+    { "text": "Истина", "correct": false }
+  ],
+  "explanation": "Твърдението е неистина, тъй като моделът CSP (Communicating Sequential Processes) на Тони Хор се базира на предаване на съобщения (message passing) за комуникация и синхронизация между процесите, а не на споделена (обща) памет."
+},
+{
+  "question": "Как се преодоляват хазартите в конвейера при наличие на процедурни зависимости в инструкционния поток?",
+  "options": [
+    { "text": "Чрез предсказване на преходите в инструкционния поток", "correct": true },
+    { "text": "Чрез пренареждане на инструкционния поток от компилатора", "correct": false },
+    { "text": "Чрез блокиращи техники на конвейера за определено време и последователна обработка", "correct": false },
+    { "text": "Чрез дублиране на критичните фази", "correct": false },
+    { "text": "Чрез прескачане на критичните фази", "correct": false },
+    { "text": "Чрез въвеждане на закъснения и модифициране изходната таблица на заетост на конвейера", "correct": false }
+  ],
+  "explanation": "Процедурните зависимости (условни и неусловни преходи) причиняват хазарти в управлението (control hazards). Основният високопроизводителен метод за тяхното преодоляване е хардуерното или софтуерното предсказване на разклоненията (branch prediction), което позволява на конвейера да продължи зареждането на инструкции без прекъсване."
+},
+{
+  "question": "What is superserver?",
+  "options": [
+    { "text": "Cluster of SMP servers", "correct": true },
+    { "text": "Parallel logical computer", "correct": false },
+    { "text": "Machine with distributed memory", "correct": false },
+    { "text": "Cluster of workstations", "correct": false },
+    { "text": "Massively parallel machine", "correct": false }
+  ],
+  "explanation": "А суперсървърът (superserver) архитектурно представлява високопроизводителна система, изградена като клъстер от симетрични мултипроцесорни (SMP) сървъри, осигуряващи висока изчислителна мощност и споделени ресурси."
+},
+{
+  "question": "Примитивите за ресурсен мениджмънт на многоядрени платформи са:",
+  "options": [
+    { "text": "Универсални", "correct": true },
+    { "text": "Имплементирани хардуерно", "correct": false },
+    { "text": "Специализирани", "correct": false }
+  ],
+  "explanation": "Примитивите за управление на ресурсите при съвременните многоядрени архитектури са проектирани да бъдат универсални, което осигурява гъвкавост на операционната система при разпределянето на натоварването и управлението на паметта/процесите независимо от конкретното приложение."
+},
+{
+  "question": "Which networks provide a polymorphic structure of the relationships through dynamic change in topology?",
+  "options": [
+    { "text": "Reconfigurable system area network", "correct": true },
+    { "text": "linear system networks", "correct": false },
+    { "text": "recirculation system networks", "correct": false },
+    { "text": "multidimensional system area network", "correct": false },
+    { "text": "non-blocking system area network", "correct": false }
+  ],
+  "explanation": "Reconfigurable networks allow the system to dynamically alter their physical or logical interconnection topology, providing a polymorphic structure tailored to the runtime communication needs of the application."
+},
+{
+  "question": "Which of the following architectures are in class \"SIMD\" according to Flynn's classification?",
+  "options": [
+    { "text": "Parallel computers with functional reconfiguration", "correct": false },
+    { "text": "Reduction parallel architectures", "correct": false },
+    { "text": "Matrix processors", "correct": true },
+    { "text": "Symmetric multiprocessors", "correct": false },
+    { "text": "Vector processor", "correct": true }
+  ],
+  "explanation": "According to Flynn's classification, SIMD (Single Instruction, Multiple Data) architectures include architectures capable of processing multiple data streams simultaneously using a single instruction stream. Matrix processors and Vector processors are classic examples of SIMD. Symmetric multiprocessors (SMP) belong to MIMD, and reduction or functionally reconfigurable architectures do not fall under the standard SIMD class."
+},
+{
+  "question": "Point the orthogonal attributes according to the classification of the computer clusters:",
+  "options": [
+    { "text": "Control and security", "correct": false },
+    { "text": "Homogeneity", "correct": true },
+    { "text": "Implementation", "correct": false },
+    { "text": "Scalability", "correct": true },
+    { "text": "Packaging", "correct": true }
+  ],
+  "explanation": "According to the classification of computer clusters (such as in Buyya's or Pfister's taxonomy), the orthogonal attributes typically include Homogeneity (homogeneous vs. heterogeneous), Scalability (scale-up vs. scale-out / number of nodes), and Packaging (compact/blade vs. slack/distributed). Control/security and Implementation are general design aspects rather than standard orthogonal classification dimensions."
+},
+{
+  "question": "Как се определя CPI ?",
+  "options": [
+    { "text": "Няма верен отговор", "correct": false },
+    { "text": "Като се раздели броя на изпълнените инструкции на времето за изпълнение на програмата", "correct": false },
+    { "text": "Като се раздели броя на циклите за изпълнение на програмата на времето, за което е изпълнена", "correct": false },
+    { "text": "Като се раздели броя на циклите за изпълнение на програмата на броя на изпълнените инструкции", "correct": true }
+  ],
+  "explanation": "CPI (Cycles Per Instruction) означава среден брой тактови цикли за една инструкция. Той се изчислява по формулата CPI = Общ брой тактови цикли / Брой изпълнени инструкции, което съответства точно на последната опция."
+},
+{
+  "question": "При коя от изброените архитектури се характеризира с най-сложен хардуер:",
+  "options": [
+    { "text": "VLIW", "correct": false },
+    { "text": "Superscalar", "correct": true },
+    { "text": "Dynamic VLIW", "correct": false },
+    { "text": "EPIC", "correct": false }
+  ],
+  "explanation": "Суперскаларната архитектура (Superscalar) изисква изключително сложен хардуер, тъй като планирането, откриването на зависимости между инструкциите и паралелното им разпределяне към изпълнителните блокове се извършват динамично по време на работа (runtime) от самия процесор. При VLIW и EPIC тази сложност е прехвърлена към компилатора."
+},
+{
+  "question": "What is \"flit\" in system area communication network?",
+  "options": [
+    { "text": "Traffic pattern", "correct": false },
+    { "text": "Flow control unit", "correct": true },
+    { "text": "Network radix", "correct": false },
+    { "text": "Network cycle in multiprocessors systems", "correct": false },
+    { "text": "Communication protocol", "correct": false }
+  ],
+  "explanation": "A \"flit\" (flow control digit) is the smallest unit of information that a flow control mechanism can accept or reject at a time within a network-on-chip or system area network. It is a subdivision of a packet, whereas a phit (physical digit) is the unit transferred across a link in one cycle."
+},
+{
+  "question": "Какво са сегментите?",
+  "options": [
+    { "text": "Част от записа на инструкция", "correct": false },
+    { "text": "Дялове от паметта с различен размер", "correct": true },
+    { "text": "Дялове от паметта с еднакъв размер", "correct": false },
+    { "text": "Нито едно от изброените", "correct": false }
+  ],
+  "explanation": "Сегментите представляват логически дялове от паметта, чийто размер е променлив (различен) и зависи от нуждите на съответната програма или структура от данни (например кодов сегмент, сегмент за данни, стек). За разлика от тях, страниците (pages) са дялове от паметта с фиксиран (какъв) размер."
+},
+{
+  "question": "Двата основни недостатъка при симулационното изследване на производителността на компютърните системи са Ниска скорост на натрупване на статистиките и неперфектността на модела.",
+  "options": [
+    { "text": "Истина", "correct": true },
+    { "text": "Неистина", "correct": false }
+  ],
+  "explanation": "Твърдението е истина. Симулационното моделиране изисква огромно количество изчислително време за изпълнение на голям брой опити (бавна статистика), а самият модел винаги е абстракция и съдържа известни неточности спрямо реалната физическа система."
+},
+{
+  "question": "Which of the following is true about the shared-memory architecture?",
+  "options": [
+    { "text": "None of the above", "correct": false },
+    { "text": "Provides only shared-memory program model", "correct": false },
+    { "text": "Provides only massages passing program model", "correct": false },
+    { "text": "Could be implemented either in shared-memory or distributed memory architectures", "correct": true },
+    { "text": "Provides hybrid program model", "correct": false }
+  ],
+  "explanation": "A shared-memory programming model can conceptually be implemented on top of physically distributed memory architectures (using Distributed Shared Memory or DSM systems), just as message-passing models can be used on shared-memory hardware. Therefore, the architectural and programming abstractions can overlap or be simulated across different underlying physical structures."
+},
+{
+  "question": "Which of the following aspects of the parallel architectures provide the system ability to adapt to the innovation technologies?",
+  "options": [
+    { "text": "Scalability of the price/efficiency ration", "correct": false },
+    { "text": "Scalability of the resources", "correct": false },
+    { "text": "Scalability of the dimension and generation", "correct": true },
+    { "text": "Scalability of the application", "correct": false },
+    { "text": "Heterogeneous scalability", "correct": false }
+  ],
+  "explanation": "Scalability of generation (or generation scalability) specifically refers to the architecture's ability to seamlessly integrate and adapt to newer generations of hardware and technological innovations without requiring a complete system redesign."
+},
+{
+  "question": "Which of the orthogonal attributes listed below specify the clusters as Compact and Slack?",
+  "options": [
+    { "text": "Security", "correct": false },
+    { "text": "Control", "correct": false },
+    { "text": "Packaging", "correct": true },
+    { "text": "Heterogeneous", "correct": false },
+    { "text": "Homogeneity", "correct": false }
+  ],
+  "explanation": "The 'Packaging' attribute determines the physical layout and density of the cluster nodes. A 'Compact' cluster features nodes tightly packed together (such as in a single room or blade chassis), whereas a 'Slack' cluster has nodes distributed across wider geographic distances or separate facilities."
+},
+{
+  "question": "Which of the following architectures are related to scalable parallel computers?",
+  "options": [
+    { "text": "Architectures without shared resources", "correct": true },
+    { "text": "Shared-memory Architecture", "correct": false },
+    { "text": "Clusters of workstations", "correct": true },
+    { "text": "Shared-disk Architecture", "correct": false },
+    { "text": "Architectures with distributed memory", "correct": true }
+  ],
+  "explanation": "Scalable parallel architectures (като MPP и клъстери) разчитат на локални ресурси и разпределена памет, за да избегнат тесните места при комуникация и достъп до паметта, които са характерни за споделените архитектури."
 }
+
 
 ]
 
