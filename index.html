@@ -1,421 +1,514 @@
 <!DOCTYPE html>
 <html lang="bg">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Случаен Въпрос</title>
-    <style>
-        :root {
-            --primary-color: #4f46e5;
-            --primary-hover: #4338ca;
-            --success-color: #16a34a;
-            --success-bg: #f0fdf4;
-            --danger-color: #dc2626;
-            --danger-bg: #fef2f2;
-            --text-main: #1f2937;
-            --text-muted: #4b5563;
-            --bg-body: #f3f4f6;
-            --bg-card: #ffffff;
-            --border-color: #e5e7eb;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тест по КГ</title>
+<style>
+  :root {
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-soft: #eef2ff;
+    --success: #16a34a;
+    --success-bg: #f0fdf4;
+    --danger: #dc2626;
+    --danger-bg: #fef2f2;
+    --warn: #d97706;
+    --text: #1f2937;
+    --muted: #6b7280;
+    --bg: #f3f4f6;
+    --card: #ffffff;
+    --opt-bg: #f9fafb;
+    --border: #e5e7eb;
+    --border-strong: #d1d5db;
+    --info-bg: #eff6ff;
+    --info: #3b82f6;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --primary: #818cf8;
+      --primary-hover: #6366f1;
+      --primary-soft: #1e1b4b;
+      --success: #4ade80;
+      --success-bg: #052e16;
+      --danger: #f87171;
+      --danger-bg: #3b0a0a;
+      --warn: #fbbf24;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+      --bg: #0f172a;
+      --card: #1e293b;
+      --opt-bg: #273449;
+      --border: #334155;
+      --border-strong: #475569;
+      --info-bg: #172554;
+      --info: #60a5fa;
+    }
+  }
 
-        body { 
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif; 
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            line-height: 1.5;
-            padding: 40px 20px; 
-            margin: 0;
-            display: flex;
-            justify-content: center;
-        }
+  * { box-sizing: border-box; }
+  body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    margin: 0;
+    padding: 32px 16px;
+    display: flex;
+    justify-content: center;
+  }
+  .card {
+    background: var(--card);
+    width: 100%;
+    max-width: 720px;
+    padding: 28px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px -10px rgb(0 0 0 / .25);
+  }
+  h1 { font-size: 1.6rem; margin: 0 0 4px; }
+  .subtitle { color: var(--muted); margin: 0 0 20px; }
+  .hidden { display: none !important; }
 
-        .quiz-card {
-            background: var(--bg-card);
-            max-width: 600px;
-            width: 100%;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-        }
+  /* ---------- start screen ---------- */
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 10px; }
+  .toggle input { width: 18px; height: 18px; accent-color: var(--primary); }
+  .best { margin-top: 16px; color: var(--muted); font-size: .9rem; }
 
-        h1 { 
-            font-size: 1.75rem;
-            margin-top: 0;
-            margin-bottom: 24px;
-            color: var(--text-main);
-            border-bottom: 2px solid var(--border-color);
-            padding-bottom: 12px;
-        }
+  button {
+    font: inherit;
+    font-weight: 600;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background .15s, opacity .15s, transform .05s;
+  }
+  button:active:not(:disabled) { transform: scale(.98); }
+  button:disabled { opacity: .45; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: #fff; }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+  .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--border-strong); }
+  .btn-ghost:hover:not(:disabled) { color: var(--text); border-color: var(--text); }
+  .btn-lg { padding: 12px 28px; font-size: 1.05rem; margin-top: 24px; }
 
-        h2 {
-            font-size: 1.25rem;
-            margin-bottom: 20px;
-            color: var(--text-main);
-        }
+  /* ---------- quiz header ---------- */
+  .topbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 10px; font-size: .9rem; color: var(--muted); }
+  .score-pill { display: flex; gap: 10px; font-weight: 600; }
+  .score-pill .ok { color: var(--success); }
+  .score-pill .bad { color: var(--danger); }
+  .progress { height: 8px; background: var(--border); border-radius: 999px; overflow: hidden; margin-bottom: 22px; }
+  .progress > div { height: 100%; width: 0; background: var(--primary); transition: width .3s ease; }
 
-        .option { 
-            display: flex;
-            align-items: center;
-            margin: 12px 0; 
-            background: #f9fafb;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            transition: all 0.2s ease;
-        }
+  .meta { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+  .tag { font-size: .75rem; font-weight: 600; padding: 3px 10px; border-radius: 999px; background: var(--primary-soft); color: var(--primary); }
+  .tag.type { background: var(--opt-bg); color: var(--muted); border: 1px solid var(--border); }
+  h2 { font-size: 1.15rem; margin: 0 0 16px; font-weight: 600; }
 
-        .option:hover {
-            background: #f3f4f6;
-            border-color: #d1d5db;
-        }
+  /* ---------- matrix ---------- */
+  .matrix-wrap { display: flex; justify-content: center; margin: 4px 0 18px; overflow-x: auto; }
+  .matrix {
+    display: inline-grid;
+    gap: 6px 18px;
+    padding: 8px 14px;
+    position: relative;
+    font-family: "Cambria Math", "Times New Roman", serif;
+    font-size: 1.15rem;
+    align-items: center;
+    justify-items: center;
+  }
+  .matrix::before, .matrix::after {
+    content: ""; position: absolute; top: 0; bottom: 0; width: 8px;
+    border: 2px solid var(--text);
+  }
+  .matrix::before { left: 0; border-right: none; }
+  .matrix::after { right: 0; border-left: none; }
+  .matrix.small { font-size: .95rem; gap: 4px 12px; }
+  .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; font-size: .85em; line-height: 1.1; }
+  .frac > span:first-child { border-bottom: 1px solid currentColor; padding: 0 2px; }
 
-        /* Направихме label-а да запълва целия контейнер за безбъгово кликане */
-        .option label {
-            cursor: pointer;
-            width: 100%;
-            padding: 12px 16px;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            user-select: none;
-        }
+  /* ---------- options ---------- */
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 10px 0;
+    padding: 12px 14px;
+    background: var(--opt-bg);
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color .15s, background .15s;
+  }
+  .option:hover { border-color: var(--border-strong); }
+  .option.selected { border-color: var(--primary); background: var(--primary-soft); }
+  .option .key {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border-radius: 6px;
+    display: grid; place-items: center;
+    font-size: .8rem; font-weight: 700;
+    background: var(--card);
+    border: 1px solid var(--border-strong);
+    color: var(--muted);
+  }
+  .option.multi .key { border-radius: 6px; }
+  .option.single .key { border-radius: 50%; }
+  .option.selected .key { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .option.locked { cursor: default; }
+  .option.correct { border-color: var(--success); background: var(--success-bg); }
+  .option.correct .key { background: var(--success); border-color: var(--success); color: #fff; }
+  .option.wrong { border-color: var(--danger); background: var(--danger-bg); }
+  .option.wrong .key { background: var(--danger); border-color: var(--danger); color: #fff; }
+  .option.missed { border-style: dashed; border-color: var(--success); }
+  .option .mark { margin-left: auto; font-weight: 700; }
 
-        .option input[type="checkbox"] {
-            margin-right: 12px;
-            width: 18px;
-            height: 18px;
-            cursor: pointer;
-            accent-color: var(--primary-color);
-            flex-shrink: 0;
-        }
+  /* ---------- match ---------- */
+  .match-row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 16px;
+    align-items: center;
+    padding: 12px;
+    margin: 10px 0;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    background: var(--opt-bg);
+  }
+  .match-row select {
+    width: 100%;
+    font: inherit;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border-strong);
+    background: var(--card);
+    color: var(--text);
+  }
+  .match-row.correct { border-color: var(--success); background: var(--success-bg); }
+  .match-row.wrong { border-color: var(--danger); background: var(--danger-bg); }
+  .match-row .fix { font-size: .85rem; color: var(--success); font-weight: 600; margin-top: 6px; }
+  @media (max-width: 560px) { .match-row { grid-template-columns: 1fr; } .match-row .matrix-wrap { margin: 0; } }
 
-        button {
-            font-size: 1rem; 
-            font-weight: 600;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: background 0.2s ease, opacity 0.2s ease;
-        }
+  /* ---------- feedback ---------- */
+  .feedback {
+    margin-top: 18px;
+    padding: 14px 16px;
+    border-left: 4px solid var(--info);
+    background: var(--info-bg);
+    border-radius: 0 10px 10px 0;
+    font-size: .95rem;
+    animation: fade .25s ease;
+  }
+  .feedback.ok { border-color: var(--success); background: var(--success-bg); }
+  .feedback.bad { border-color: var(--danger); background: var(--danger-bg); }
+  .feedback .verdict { font-weight: 700; display: block; margin-bottom: 4px; }
+  @keyframes fade { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
 
-        .actions-container {
-            display: flex;
-            gap: 12px;
-            margin-top: 20px;
-            align-items: center;
-        }
+  .actions { display: flex; gap: 10px; margin-top: 20px; align-items: center; flex-wrap: wrap; }
+  .actions .spacer { flex: 1; }
+  .hint { font-size: .8rem; color: var(--muted); margin-top: 14px; }
+  kbd { font-family: inherit; font-size: .75rem; padding: 1px 6px; border: 1px solid var(--border-strong); border-bottom-width: 2px; border-radius: 4px; background: var(--opt-bg); }
 
-        #next-btn {
-            background-color: var(--primary-color);
-            color: white;
-        }
-
-        #next-btn:hover:not(:disabled) {
-            background-color: var(--primary-hover);
-        }
-
-        #submit-btn {
-            background-color: #374151;
-            color: white;
-        }
-
-        #submit-btn:hover:not(:disabled) {
-            background-color: #1f2937;
-        }
-
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        #explanation-container { 
-            margin-top: 20px; 
-            padding: 16px; 
-            background-color: #eff6ff; 
-            border-left: 4px solid #3b82f6; 
-            border-radius: 0 8px 8px 0;
-            font-size: 0.95rem;
-        }
-
-        #stats { 
-            margin-top: 20px; 
-            font-weight: 600;
-            font-size: 0.95rem;
-            color: var(--text-muted);
-            background: #f3f4f6;
-            padding: 8px 12px;
-            border-radius: 6px;
-            display: inline-block;
-        }
-
-        #wrong-answers { 
-            margin-top: 30px; 
-            border-top: 2px dashed var(--border-color);
-            padding-top: 20px;
-        }
-
-        #wrong-answers h3 {
-            color: var(--danger-color);
-            margin-top: 0;
-        }
-
-        .wrong-q-item {
-            background: var(--danger-bg);
-            padding: 14px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            border: 1px solid #fee2e2;
-        }
-
-        .wrong-q-item p {
-            margin: 4px 0;
-        }
-
-        .finish-msg {
-            color: var(--primary-color);
-            font-weight: bold;
-            font-size: 1.2rem;
-            text-align: center;
-            padding: 20px 0;
-        }
-    </style>
+  /* ---------- results ---------- */
+  .result-head { display: flex; align-items: center; gap: 24px; flex-wrap: wrap; margin-bottom: 10px; }
+  .ring { width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; flex-shrink: 0; }
+  .ring > div { width: 94px; height: 94px; border-radius: 50%; background: var(--card); display: grid; place-items: center; font-size: 1.6rem; font-weight: 800; }
+  .result-text h2 { margin-bottom: 4px; font-size: 1.4rem; }
+  .result-text p { margin: 0; color: var(--muted); }
+  .review h3 { margin: 26px 0 10px; color: var(--danger); font-size: 1.05rem; }
+  .review-item { background: var(--danger-bg); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
+  .review-item .q { font-weight: 600; margin-bottom: 6px; }
+  .review-item .a { color: var(--success); font-weight: 500; font-size: .93rem; }
+  .review-item .a::before { content: "✔ "; }
+  .perfect { text-align: center; font-size: 1.1rem; color: var(--success); font-weight: 700; margin: 22px 0 0; }
+</style>
 </head>
 <body>
+<div class="card">
 
-    <div class="quiz-card">
-        <h1>Случаен Въпрос</h1>
-        
-        <div id="question-container"></div>
-        
-        <div class="actions-container">
-            <button id="submit-btn" onclick="checkAnswer()">Провери отговор</button>
-            <button id="next-btn" onclick="showRandomQuestion()" disabled>Нов въпрос</button>
-        </div>
+  <!-- ===== START ===== -->
+  <section id="start-screen">
+    <h1>Тест по Компютърна графика</h1>
+    <p class="subtitle" id="start-sub"></p>
 
-        <div id="explanation-container" style="display: none;"></div>
-        <p id="stats"></p>
-        <div id="wrong-answers"></div>
+    <label class="toggle"><input type="checkbox" id="opt-shuffle" checked> Разбъркай отговорите</label>
+    <label class="toggle"><input type="checkbox" id="opt-instant"> Проверявай веднага при избор (за въпроси с един отговор)</label>
+
+    <button class="btn-primary btn-lg" id="start-btn">Започни теста →</button>
+    <div class="best" id="best-score"></div>
+  </section>
+
+  <!-- ===== QUIZ ===== -->
+  <section id="quiz-screen" class="hidden">
+    <div class="topbar">
+      <span id="counter"></span>
+      <span class="score-pill"><span class="ok" id="sc-ok">✔ 0</span><span class="bad" id="sc-bad">✘ 0</span></span>
     </div>
+    <div class="progress"><div id="progress-bar"></div></div>
 
-    <script src="questions.js"></script>
+    <div class="meta" id="meta"></div>
+    <h2 id="q-text"></h2>
+    <div id="q-matrix"></div>
+    <div id="q-body"></div>
+    <div id="feedback" class="feedback hidden"></div>
+
+    <div class="actions">
+      <button class="btn-ghost" id="quit-btn" title="Към резултатите">Приключи</button>
+      <span class="spacer"></span>
+      <button class="btn-primary" id="check-btn" disabled>Провери</button>
+      <button class="btn-primary hidden" id="next-btn">Следващ →</button>
+    </div>
+    <div class="hint"><kbd>1</kbd>-<kbd>9</kbd> избор на отговор · <kbd>Enter</kbd> проверка / следващ</div>
+  </section>
+
+  <!-- ===== RESULTS ===== -->
+  <section id="result-screen" class="hidden">
+    <div class="result-head">
+      <div class="ring" id="ring"><div id="ring-val"></div></div>
+      <div class="result-text">
+        <h2 id="res-title"></h2>
+        <p id="res-detail"></p>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="btn-primary" id="retry-wrong-btn">Повтори грешните</button>
+      <button class="btn-ghost" id="restart-btn">Нов тест</button>
+    </div>
+    <div class="review" id="review"></div>
+  </section>
+
+</div>
+
+<script src="questions.js"></script>
 <script>
-    let shownIndexes = [];
-    let correctCount = 0;
-    let wrongCount = 0;
-    const totalQuestions = questions.length;
-    let wrongQuestions = [];
-    let quizFinished = false;
-    
-    // Глобални променливи за текущия въпрос
-    let currentQuestion = null;
-    let currentShuffledOptions = [];
-    let selectedAnswers = [];
+(() => {
+  const $ = id => document.getElementById(id);
+  const ALL = questions.map((q, i) => ({ ...q, id: i }));
 
-    function shuffle(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [array[i], array[j]] = [array[j], array[i]];
+  const store = {
+    get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
+  };
+
+  let deck = [], pos = 0, ok = 0, bad = 0, wrongList = [];
+  let current = null, answered = false, selection = new Set();
+
+  const shuffle = a => { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+  const plain = html => { const d = document.createElement("div"); d.innerHTML = html; return d.textContent; };
+
+  function renderMatrix(rows, small) {
+    const wrap = document.createElement("div");
+    wrap.className = "matrix-wrap";
+    const m = document.createElement("div");
+    m.className = "matrix" + (small ? " small" : "");
+    m.style.gridTemplateColumns = `repeat(${rows[0].length}, auto)`;
+    rows.flat().forEach(cell => { const s = document.createElement("span"); s.innerHTML = cell; m.appendChild(s); });
+    wrap.appendChild(m);
+    return wrap;
+  }
+
+  /* ---------- start screen ---------- */
+  function buildStart() {
+    $("start-sub").textContent = `${ALL.length} уникални въпроса от примерния изпит · проверени отговори с обяснения`;
+    const best = store.get("kg-best");
+    $("best-score").textContent = best ? `Най-добър резултат: ${best.pct}% (${best.ok}/${best.total})` : "";
+  }
+
+  function startQuiz(list) {
+    deck = shuffle(list);
+    pos = 0; ok = 0; bad = 0; wrongList = [];
+    show("quiz-screen");
+    renderQuestion();
+  }
+
+  $("start-btn").onclick = () => startQuiz(ALL);
+
+  function show(id) {
+    ["start-screen", "quiz-screen", "result-screen"].forEach(s => $(s).classList.toggle("hidden", s !== id));
+    window.scrollTo({ top: 0 });
+  }
+
+  /* ---------- question ---------- */
+  function renderQuestion() {
+    current = deck[pos];
+    answered = false;
+    selection = new Set();
+
+    $("counter").textContent = `Въпрос ${pos + 1} от ${deck.length}`;
+    $("progress-bar").style.width = `${(pos / deck.length) * 100}%`;
+    $("sc-ok").textContent = `✔ ${ok}`;
+    $("sc-bad").textContent = `✘ ${bad}`;
+
+    const typeLabel = { single: "Един отговор", multi: "Един или повече отговора", match: "Съответствие" }[current.type];
+    $("meta").innerHTML = `<span class="tag type">${typeLabel}</span>`;
+    $("q-text").textContent = current.question;
+    $("q-matrix").innerHTML = "";
+    if (current.matrix) $("q-matrix").appendChild(renderMatrix(current.matrix));
+
+    const body = $("q-body"); body.innerHTML = "";
+    $("feedback").className = "feedback hidden";
+    $("check-btn").classList.remove("hidden");
+    $("next-btn").classList.add("hidden");
+    $("check-btn").disabled = true;
+
+    if (current.type === "match") renderMatch(body);
+    else renderOptions(body);
+  }
+
+  function renderOptions(body) {
+    const opts = $("opt-shuffle").checked ? shuffle(current.options) : current.options;
+    current._opts = opts;
+    opts.forEach((o, i) => {
+      const el = document.createElement("div");
+      el.className = `option ${current.type}`;
+      el.innerHTML = `<span class="key">${i + 1}</span><span class="txt"></span><span class="mark"></span>`;
+      el.querySelector(".txt").textContent = o.text;
+      el.onclick = () => toggleOption(i);
+      body.appendChild(el);
+    });
+  }
+
+  function toggleOption(i) {
+    if (answered || !current._opts || i >= current._opts.length) return;
+    if (current.type === "single") selection = new Set([i]);
+    else selection.has(i) ? selection.delete(i) : selection.add(i);
+    [...$("q-body").children].forEach((el, k) => el.classList.toggle("selected", selection.has(k)));
+    $("check-btn").disabled = selection.size === 0;
+    if (current.type === "single" && $("opt-instant").checked) check();
+  }
+
+  function renderMatch(body) {
+    const pairs = $("opt-shuffle").checked ? shuffle(current.pairs) : current.pairs;
+    current._pairs = pairs;
+    pairs.forEach((p, i) => {
+      const row = document.createElement("div");
+      row.className = "match-row";
+      row.appendChild(renderMatrix(p.matrix, true));
+      const right = document.createElement("div");
+      const sel = document.createElement("select");
+      sel.innerHTML = `<option value="">Изберете…</option>` + current.choices.map(c => `<option>${c}</option>`).join("");
+      sel.onchange = () => { $("check-btn").disabled = [...body.querySelectorAll("select")].some(s => !s.value); };
+      right.appendChild(sel);
+      row.appendChild(right);
+      body.appendChild(row);
+    });
+  }
+
+  /* ---------- check ---------- */
+  function check() {
+    if (answered) return;
+    answered = true;
+    let correct;
+    const body = $("q-body");
+    let correctText = [];
+
+    if (current.type === "match") {
+      const rows = [...body.querySelectorAll(".match-row")];
+      correct = true;
+      rows.forEach((row, i) => {
+        const sel = row.querySelector("select");
+        const want = current._pairs[i].answer;
+        sel.disabled = true;
+        const good = sel.value === want;
+        row.classList.add(good ? "correct" : "wrong");
+        if (!good) {
+          correct = false;
+          const fix = document.createElement("div");
+          fix.className = "fix";
+          fix.textContent = `✔ ${want}`;
+          row.lastChild.appendChild(fix);
         }
-        return array;
+      });
+      correctText = current.pairs.map((p, i) => `Матрица ${i + 1}: ${p.answer}`);
+    } else {
+      const els = [...body.children];
+      correct = true;
+      current._opts.forEach((o, i) => {
+        const el = els[i];
+        el.classList.add("locked");
+        const picked = selection.has(i);
+        if (o.correct && picked) { el.classList.add("correct"); el.querySelector(".mark").textContent = "✔"; }
+        else if (o.correct && !picked) { el.classList.add("correct", "missed"); el.querySelector(".mark").textContent = "✔"; correct = false; }
+        else if (!o.correct && picked) { el.classList.add("wrong"); el.querySelector(".mark").textContent = "✘"; correct = false; }
+      });
+      correctText = current.options.filter(o => o.correct).map(o => o.text);
     }
 
-    function sanitizeText(text) {
-        return String(text).replace(/^\s*\d+[\.\)\-:\s]+/, '').trim();
+    if (correct) ok++; else { bad++; wrongList.push({ q: current, answers: correctText }); }
+    $("sc-ok").textContent = `✔ ${ok}`;
+    $("sc-bad").textContent = `✘ ${bad}`;
+    $("progress-bar").style.width = `${((pos + 1) / deck.length) * 100}%`;
+
+    const fb = $("feedback");
+    fb.className = "feedback " + (correct ? "ok" : "bad");
+    fb.innerHTML = `<span class="verdict">${correct ? "✔ Вярно!" : "✘ Грешно"}</span>${current.explanation || ""}`;
+
+    $("check-btn").classList.add("hidden");
+    $("next-btn").classList.remove("hidden");
+    $("next-btn").textContent = pos + 1 < deck.length ? "Следващ →" : "Виж резултата";
+    $("next-btn").focus();
+  }
+
+  function next() {
+    if (pos + 1 < deck.length) { pos++; renderQuestion(); }
+    else finish();
+  }
+
+  /* ---------- results ---------- */
+  function finish() {
+    const total = ok + bad;
+    const pct = total ? Math.round((ok / total) * 100) : 0;
+    const color = pct >= 80 ? "var(--success)" : pct >= 50 ? "var(--warn)" : "var(--danger)";
+    $("ring").style.background = `conic-gradient(${color} ${pct * 3.6}deg, var(--border) 0)`;
+    $("ring-val").textContent = `${pct}%`;
+    $("ring-val").style.color = color;
+    $("res-title").textContent = pct >= 90 ? "Отлично! 🎉" : pct >= 70 ? "Много добре!" : pct >= 50 ? "Добре, но има какво да се повтори" : "Нужно е още упражнение";
+    $("res-detail").textContent = `Верни: ${ok} · Грешни: ${bad} · Отговорени: ${total} от ${deck.length}`;
+
+    if (total === deck.length && deck.length === ALL.length) {
+      const best = store.get("kg-best");
+      if (!best || pct > best.pct) store.set("kg-best", { pct, ok, total });
     }
 
-    // Изнесено в CSS променливи
-    function updateStats() {
-        const stats = document.getElementById("stats");
-        stats.textContent = `Вярно: ${correctCount} от ${totalQuestions} | Грешно: ${wrongCount}`;
+    const rv = $("review"); rv.innerHTML = "";
+    if (wrongList.length) {
+      rv.innerHTML = `<h3>Грешно отговорени (${wrongList.length})</h3>`;
+      wrongList.forEach(w => {
+        const d = document.createElement("div");
+        d.className = "review-item";
+        const q = document.createElement("div"); q.className = "q"; q.textContent = w.q.question;
+        d.appendChild(q);
+        if (w.q.matrix) d.appendChild(renderMatrix(w.q.matrix, true));
+        w.answers.forEach(a => { const p = document.createElement("div"); p.className = "a"; p.textContent = a; d.appendChild(p); });
+        rv.appendChild(d);
+      });
+    } else if (total) {
+      rv.innerHTML = `<p class="perfect">Няма грешни отговори!</p>`;
     }
+    $("retry-wrong-btn").classList.toggle("hidden", !wrongList.length);
+    show("result-screen");
+  }
 
-    function showWrongAnswers() {
-        const container = document.getElementById("wrong-answers");
-        container.innerHTML = "";
+  $("check-btn").onclick = check;
+  $("next-btn").onclick = next;
+  $("quit-btn").onclick = finish;
+  $("restart-btn").onclick = () => { buildStart(); show("start-screen"); };
+  $("retry-wrong-btn").onclick = () => startQuiz(wrongList.map(w => w.q));
 
-        if (wrongQuestions.length > 0) {
-            const header = document.createElement("h3");
-            header.textContent = "Грешно отговорени въпроси:";
-            container.appendChild(header);
-
-            wrongQuestions.forEach(item => {
-                const qDiv = document.createElement("div");
-                qDiv.className = "wrong-q-item";
-
-                const qText = document.createElement("p");
-                qText.style.fontWeight = "600";
-                qText.textContent = `❌ ${item.question}`;
-                qDiv.appendChild(qText);
-
-                item.correctAnswers.forEach(ans => {
-                    const correct = document.createElement("p");
-                    correct.textContent = `✔ Правилен отговор: ${ans}`;
-                    correct.style.color = "var(--success-color)";
-                    correct.style.fontWeight = "500";
-                    qDiv.appendChild(correct);
-                });
-
-                container.appendChild(qDiv);
-            });
-        }
+  document.addEventListener("keydown", e => {
+    if ($("quiz-screen").classList.contains("hidden")) return;
+    if (e.target.tagName === "SELECT") return;
+    if (/^[1-9]$/.test(e.key)) { toggleOption(+e.key - 1); }
+    else if (e.key === "Enter") {
+      e.preventDefault();
+      if (answered) next();
+      else if (!$("check-btn").disabled) check();
     }
+  });
 
-    function showRandomQuestion() {
-        const container = document.getElementById("question-container");
-        const nextBtn = document.getElementById("next-btn");
-        const submitBtn = document.getElementById("submit-btn");
-        const wrongDiv = document.getElementById("wrong-answers");
-        const explanationDiv = document.getElementById("explanation-container");
-
-        container.innerHTML = "";
-        wrongDiv.innerHTML = "";
-        explanationDiv.style.display = "none";
-        selectedAnswers = [];
-
-        if (quizFinished) {
-            resetQuiz();
-            return;
-        }
-
-        nextBtn.disabled = true;
-        submitBtn.disabled = false;
-
-        if (shownIndexes.length === questions.length) {
-            const msg = document.createElement("p");
-            msg.className = "finish-msg";
-            msg.textContent = "Всички въпроси са отговорени!";
-            container.appendChild(msg);
-
-            showWrongAnswers();
-
-            nextBtn.disabled = false;
-            submitBtn.disabled = true;
-            nextBtn.textContent = "Започни отначало";
-            quizFinished = true;
-            return;
-        }
-
-        let index;
-        do {
-            index = Math.floor(Math.random() * questions.length);
-        } while (shownIndexes.includes(index));
-
-        shownIndexes.push(index);
-
-        currentQuestion = questions[index];
-
-        const q = document.createElement("h2");
-        q.textContent = sanitizeText(currentQuestion.question);
-        container.appendChild(q);
-
-        currentShuffledOptions = shuffle([...currentQuestion.options]);
-
-        currentShuffledOptions.forEach((opt, i) => {
-            const wrapper = document.createElement("div");
-            wrapper.className = "option";
-
-            const label = document.createElement("label");
-            label.htmlFor = `option-${i}`;
-
-            const checkbox = document.createElement("input");
-            checkbox.type = "checkbox";
-            checkbox.id = `option-${i}`;
-
-            checkbox.onchange = () => {
-                if (checkbox.checked) {
-                    selectedAnswers.push(opt.text);
-                } else {
-                    const idx = selectedAnswers.indexOf(opt.text);
-                    if (idx > -1) selectedAnswers.splice(idx, 1);
-                }
-            };
-
-            const textSpan = document.createElement("span");
-            textSpan.textContent = sanitizeText(opt.text);
-
-            label.appendChild(checkbox);
-            label.appendChild(textSpan);
-            wrapper.appendChild(label);
-            container.appendChild(wrapper);
-        });
-    }
-
-    function checkAnswer() {
-        const container = document.getElementById("question-container");
-        const nextBtn = document.getElementById("next-btn");
-        const submitBtn = document.getElementById("submit-btn");
-        const explanationDiv = document.getElementById("explanation-container");
-
-        const correctAnswers = currentShuffledOptions.filter(o => o.correct).map(o => o.text);
-        const selectedSorted = [...selectedAnswers].sort();
-        const correctSorted = [...correctAnswers].sort();
-
-        const isCorrect = JSON.stringify(selectedSorted) === JSON.stringify(correctSorted);
-        const optionDivs = container.querySelectorAll(".option");
-
-        currentShuffledOptions.forEach((opt, idx) => {
-            const label = optionDivs[idx].querySelector("label");
-            const currentWrapper = optionDivs[idx];
-            
-            if (opt.correct) {
-                currentWrapper.style.backgroundColor = "var(--success-bg)";
-                currentWrapper.style.borderColor = "var(--success-color)";
-                label.style.color = "var(--success-color)";
-                label.style.fontWeight = "bold";
-            } else if (selectedAnswers.includes(opt.text)) {
-                currentWrapper.style.backgroundColor = "var(--danger-bg)";
-                currentWrapper.style.borderColor = "var(--danger-color)";
-                label.style.color = "var(--danger-color)";
-            }
-
-            const checkbox = optionDivs[idx].querySelector("input");
-            checkbox.disabled = true;
-        });
-
-        if (isCorrect) {
-            correctCount++;
-            explanationDiv.style.borderLeftColor = "var(--success-color)";
-            explanationDiv.style.backgroundColor = "var(--success-bg)";
-        } else {
-            wrongCount++;
-            wrongQuestions.push({
-                question: sanitizeText(currentQuestion.question),
-                correctAnswers: correctAnswers.map(a => sanitizeText(a))
-            });
-            explanationDiv.style.borderLeftColor = "var(--danger-color)";
-            explanationDiv.style.backgroundColor = "var(--danger-bg)";
-        }
-
-        if (currentQuestion.explanation) {
-            explanationDiv.innerHTML = `<strong>Обяснение:</strong> ${currentQuestion.explanation}`;
-            explanationDiv.style.display = "block";
-        } else if (!isCorrect) {
-            explanationDiv.innerHTML = `<strong>Резултат:</strong> Грешен отговор!`;
-            explanationDiv.style.display = "block";
-        }
-
-        updateStats();
-        submitBtn.disabled = true;
-        nextBtn.disabled = false;
-    }
-
-    function resetQuiz() {
-        shownIndexes = [];
-        correctCount = 0;
-        wrongCount = 0;
-        wrongQuestions = [];
-        quizFinished = false;
-
-        document.getElementById("next-btn").textContent = "Нов въпрос";
-
-        updateStats();
-        showRandomQuestion();
-    }
-
-    updateStats();
-    showRandomQuestion();
+  buildStart();
+})();
 </script>
-
 </body>
 </html>
