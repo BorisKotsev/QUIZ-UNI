@@ -73,7 +73,6 @@
   .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
   .toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; margin-top: 10px; }
   .toggle input { width: 18px; height: 18px; accent-color: var(--primary); }
-  .best { margin-top: 16px; color: var(--muted); font-size: .9rem; }
 
   button {
     font: inherit;
@@ -221,6 +220,35 @@
   .review-item .q { font-weight: 600; margin-bottom: 6px; }
   .review-item .a { color: var(--success); font-weight: 500; font-size: .93rem; }
   .review-item .a::before { content: "✔ "; }
+  /* ---------- all questions ---------- */
+  .start-actions { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-top: 24px; }
+  .start-actions .btn-lg { margin-top: 0; }
+  .all-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 14px; }
+  .all-head h2 { margin: 0; font-size: 1.3rem; }
+  .search {
+    width: 100%; font: inherit; padding: 10px 12px; margin-bottom: 6px;
+    border: 1px solid var(--border-strong); border-radius: 8px;
+    background: var(--opt-bg); color: var(--text);
+  }
+  .search:focus { outline: 2px solid var(--primary); outline-offset: 1px; }
+  .all-count { font-size: .85rem; color: var(--muted); margin-bottom: 10px; }
+  .all-item { border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; margin-bottom: 14px; background: var(--card); }
+  .all-item .q { font-weight: 600; margin-bottom: 8px; }
+  .all-item .q .num { color: var(--primary); margin-right: 6px; }
+  .all-item .meta { margin-bottom: 8px; }
+  .all-opt { padding: 6px 10px; margin: 4px 0; border-radius: 6px; font-size: .93rem; color: var(--muted); }
+  .all-opt.correct { background: var(--success-bg); color: var(--success); font-weight: 600; }
+  .all-opt.correct::before { content: "✔ "; }
+  .all-opt:not(.correct)::before { content: "• "; }
+  .all-pair { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; padding: 6px 10px; margin: 6px 0; border-radius: 8px; background: var(--success-bg); }
+  .all-pair .matrix-wrap { margin: 0; }
+  .all-pair .ans { color: var(--success); font-weight: 600; }
+  .all-pair .ans::before { content: "→ "; }
+  .pair-num { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; font-size: .85rem; background: var(--primary); color: #fff; }
+  .match-row .left { display: flex; align-items: center; gap: 10px; }
+  .all-item .feedback { margin-top: 10px; animation: none; }
+  .to-top { position: fixed; right: 18px; bottom: 18px; border-radius: 50%; width: 44px; height: 44px; padding: 0; box-shadow: 0 4px 12px rgb(0 0 0 / .25); }
+
   .perfect { text-align: center; font-size: 1.1rem; color: var(--success); font-weight: 700; margin: 22px 0 0; }
 </style>
 </head>
@@ -235,8 +263,22 @@
     <label class="toggle"><input type="checkbox" id="opt-shuffle" checked> Разбъркай отговорите</label>
     <label class="toggle"><input type="checkbox" id="opt-instant"> Проверявай веднага при избор (за въпроси с един отговор)</label>
 
-    <button class="btn-primary btn-lg" id="start-btn">Започни теста →</button>
-    <div class="best" id="best-score"></div>
+    <div class="start-actions">
+      <button class="btn-primary btn-lg" id="start-btn">Започни теста →</button>
+      <button class="btn-ghost btn-lg" id="all-btn">📖 Виж всички въпроси с отговорите</button>
+    </div>
+  </section>
+
+  <!-- ===== ALL QUESTIONS ===== -->
+  <section id="all-screen" class="hidden">
+    <div class="all-head">
+      <h2>Всички въпроси</h2>
+      <button class="btn-ghost" id="all-back-btn">← Назад</button>
+    </div>
+    <input type="search" class="search" id="all-search" placeholder="Търси във въпросите, отговорите и обясненията…">
+    <div class="all-count" id="all-count"></div>
+    <div id="all-list"></div>
+    <button class="btn-primary to-top hidden" id="to-top-btn" title="Нагоре">↑</button>
   </section>
 
   <!-- ===== QUIZ ===== -->
@@ -286,11 +328,6 @@
   const $ = id => document.getElementById(id);
   const ALL = questions.map((q, i) => ({ ...q, id: i }));
 
-  const store = {
-    get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch {} }
-  };
-
   let deck = [], pos = 0, ok = 0, bad = 0, wrongList = [];
   let current = null, answered = false, selection = new Set();
 
@@ -311,8 +348,6 @@
   /* ---------- start screen ---------- */
   function buildStart() {
     $("start-sub").textContent = `${ALL.length} уникални въпроса от примерния изпит · проверени отговори с обяснения`;
-    const best = store.get("kg-best");
-    $("best-score").textContent = best ? `Най-добър резултат: ${best.pct}% (${best.ok}/${best.total})` : "";
   }
 
   function startQuiz(list) {
@@ -325,9 +360,83 @@
   $("start-btn").onclick = () => startQuiz(ALL);
 
   function show(id) {
-    ["start-screen", "quiz-screen", "result-screen"].forEach(s => $(s).classList.toggle("hidden", s !== id));
+    ["start-screen", "all-screen", "quiz-screen", "result-screen"].forEach(s => $(s).classList.toggle("hidden", s !== id));
     window.scrollTo({ top: 0 });
+    $("to-top-btn").classList.add("hidden");
   }
+
+  /* ---------- all questions ---------- */
+  const TYPE_LABEL = { single: "Един отговор", multi: "Един или повече отговора", match: "Съответствие" };
+  let allBuilt = false;
+
+  function buildAll() {
+    const list = $("all-list");
+    list.innerHTML = "";
+    ALL.forEach((q, i) => {
+      const d = document.createElement("div");
+      d.className = "all-item";
+      d.innerHTML = `<div class="meta"><span class="tag type">${TYPE_LABEL[q.type]}</span></div>`;
+      const qt = document.createElement("div");
+      qt.className = "q";
+      qt.innerHTML = `<span class="num">${i + 1}.</span>`;
+      qt.appendChild(document.createTextNode(q.question));
+      d.appendChild(qt);
+      if (q.matrix) d.appendChild(renderMatrix(q.matrix, true));
+
+      if (q.type === "match") {
+        q.pairs.forEach((p, k) => {
+          const row = document.createElement("div");
+          row.className = "all-pair";
+          row.innerHTML = `<span class="pair-num">${k + 1}</span>`;
+          row.appendChild(renderMatrix(p.matrix, true));
+          const a = document.createElement("span");
+          a.className = "ans"; a.textContent = p.answer;
+          row.appendChild(a);
+          d.appendChild(row);
+        });
+      } else {
+        q.options.forEach(o => {
+          const el = document.createElement("div");
+          el.className = "all-opt" + (o.correct ? " correct" : "");
+          el.textContent = o.text;
+          d.appendChild(el);
+        });
+      }
+
+      if (q.explanation) {
+        const fb = document.createElement("div");
+        fb.className = "feedback";
+        fb.innerHTML = `<span class="verdict">💡 Обяснение</span>${q.explanation}`;
+        d.appendChild(fb);
+      }
+      d.dataset.search = (q.question + " " + d.textContent).toLowerCase();
+      list.appendChild(d);
+    });
+    allBuilt = true;
+  }
+
+  function filterAll() {
+    const term = $("all-search").value.trim().toLowerCase();
+    let n = 0;
+    [...$("all-list").children].forEach(d => {
+      const hit = !term || d.dataset.search.includes(term);
+      d.classList.toggle("hidden", !hit);
+      if (hit) n++;
+    });
+    $("all-count").textContent = term ? `Намерени: ${n} от ${ALL.length}` : `${ALL.length} въпроса`;
+  }
+
+  $("all-btn").onclick = () => {
+    if (!allBuilt) buildAll();
+    filterAll();
+    show("all-screen");
+  };
+  $("all-back-btn").onclick = () => show("start-screen");
+  $("all-search").oninput = filterAll;
+  $("to-top-btn").onclick = () => window.scrollTo({ top: 0, behavior: "smooth" });
+  window.addEventListener("scroll", () => {
+    $("to-top-btn").classList.toggle("hidden", $("all-screen").classList.contains("hidden") || window.scrollY < 400);
+  });
 
   /* ---------- question ---------- */
   function renderQuestion() {
@@ -384,7 +493,11 @@
     pairs.forEach((p, i) => {
       const row = document.createElement("div");
       row.className = "match-row";
-      row.appendChild(renderMatrix(p.matrix, true));
+      const left = document.createElement("div");
+      left.className = "left";
+      left.innerHTML = `<span class="pair-num">${current.pairs.indexOf(p) + 1}</span>`;
+      left.appendChild(renderMatrix(p.matrix, true));
+      row.appendChild(left);
       const right = document.createElement("div");
       const sel = document.createElement("select");
       sel.innerHTML = `<option value="">Изберете…</option>` + current.choices.map(c => `<option>${c}</option>`).join("");
@@ -465,11 +578,6 @@
     $("ring-val").style.color = color;
     $("res-title").textContent = pct >= 90 ? "Отлично! 🎉" : pct >= 70 ? "Много добре!" : pct >= 50 ? "Добре, но има какво да се повтори" : "Нужно е още упражнение";
     $("res-detail").textContent = `Верни: ${ok} · Грешни: ${bad} · Отговорени: ${total} от ${deck.length}`;
-
-    if (total === deck.length && deck.length === ALL.length) {
-      const best = store.get("kg-best");
-      if (!best || pct > best.pct) store.set("kg-best", { pct, ok, total });
-    }
 
     const rv = $("review"); rv.innerHTML = "";
     if (wrongList.length) {
